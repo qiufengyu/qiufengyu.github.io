@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon.ico">
+  <link rel="mask-icon" href="/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"qiufengyu.github.io","root":"/","scheme":"Gemini","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="算法导论中的经典问题，分治的思想，从子问题着手。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Algorithm - Divide and Conquer">
+<meta property="og:url" content="http://qiufengyu.github.io/2014/divide-and-conquer/">
+<meta property="og:site_name" content="Heaven&#39;s Wall">
+<meta property="og:description" content="算法导论中的经典问题，分治的思想，从子问题着手。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://images.cnitblog.com/blog/632767/201411/080134160342840.png">
+<meta property="og:image" content="http://images.cnitblog.com/blog/632767/201411/080136295969069.png">
+<meta property="article:published_time" content="2014-11-07T10:42:58.000Z">
+<meta property="article:modified_time" content="2020-02-23T13:01:24.786Z">
+<meta property="article:author" content="Godfray Qiu">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://images.cnitblog.com/blog/632767/201411/080134160342840.png">
+
+<link rel="canonical" href="http://qiufengyu.github.io/2014/divide-and-conquer/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>Algorithm - Divide and Conquer | Heaven's Wall</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta custom-logo">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Heaven's Wall</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">落尽红樱君不见，轻绘梨花泪沾衣</p>
+      <a>
+        <img class="custom-logo-image" src="/images/custom-logo.jpg" alt="Heaven's Wall">
+      </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://qiufengyu.github.io/2014/divide-and-conquer/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Godfray Qiu">
+      <meta itemprop="description" content="清纯佳人白玫瑰，高冷酸假">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Heaven's Wall">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Algorithm - Divide and Conquer
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2014-11-07 18:42:58" itemprop="dateCreated datePublished" datetime="2014-11-07T18:42:58+08:00">2014-11-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-02-23 21:01:24" itemprop="dateModified" datetime="2020-02-23T21:01:24+08:00">2020-02-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Algorithm/" itemprop="url" rel="index"><span itemprop="name">Algorithm</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">算法导论中的经典问题，分治的思想，从子问题着手。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>今天的算法课高能的不行，对助教各种膜拜<del>这里就厚颜无耻地讲讲吧</del></p>
+<h2 id="Master-Theory"><a href="#Master-Theory" class="headerlink" title="Master Theory"></a>Master Theory</h2><p>首先，提到这个高能的问题，不得不说说那个 Master Theory，简直是外挂…<br>$$T(n) = \underbrace{\Theta(n^{\log_b a})}_{\text{solving base cases}}+\underbrace{\sum\limits_{j=0}^{(\log_b n) -1}a^j f\left(\frac{n}{b^j}\right)}_{g(n)=\text{ dividing and combining}}$$</p>
+<ul>
+<li><p>Case 1: $f(n) = O(n^{\log_b a-\varepsilon})$ :<br>$g(n) = O(n^{\log_b a}); T(n) = \Theta(n^{\log_b a})$ </p>
+</li>
+<li><p>Case 2:  $f(n) = \Theta(n^{\log_b a})$ :<br>$g(n) = n^{\log_b a} \log_b n; T(n) = \Theta(n^{\log_b a}) \log_b n$</p>
+</li>
+<li><p>Case 3:  $f(n) = \Omega(n^{\log_b a+\varepsilon})$ :<br>$g(n) = \Theta(f(n)); T(n) = \Theta(f(n))$</p>
+</li>
+</ul>
+<p>有了这个利器，我们就能运用一定的技巧来解题啦~~ </p>
+<h2 id="n-bit整数的乘法"><a href="#n-bit整数的乘法" class="headerlink" title="n-bit整数的乘法"></a>n-bit整数的乘法</h2><p>（喂，我们讲的是二进制啊<del>）<br>其实，我们小学数学就教过的列竖式的方法，要先计算 1-bit 乘以 n-bit，然后还要适当进行移位，最后再相加，注意我们这里定义的 Elementary Options 是两个 n-bit 数的加法是 $O(n)$，1-bit 乘以 n-bit 为 $O(1)$，移位操作也为 $O(1)$，所以共要进行 $n$ 次乘法，大约是 $n$ 次移位，最后是 $n$ 次的加法，由于加法本身已经是 $O(n)$ 的了，所以总的复杂度达到了 $O(n^2)$。许多年来我们都是这么做的啊，也没什么不好，而且似乎一度有人认为 n-bit 整数乘法的下界就是 $\Omega(n^2)$ 了。<br>到了 1960 年的时候，提出了一种新的算法，复杂度降低到了 $O(n^{1.59})$，其实，你发现了么，就是 $O(n^{\log_2 3})$，然后你看看 Master Thm，也能够凑出来啦</del>首先，我们进行分的操作：<br>$$x=x_L|x_R=x^{n/2}x_L+x_R$$ $$y=y_L|y_R=y^{n/2}y_L+y_R$$ $$xy=(x^{n/2}x_L+x_R)(y^{n/2}y_L+y_R)$$ $$xy=2^nx_Ly_L+2^{n/2}(x_Ly_R+x_Ry_L)+x_Ry_R$$可是，这样的结果是，最终问题规模缩减一半，但是我们需要解决 4 个这样的子问题，然后还有 $n+n/2$ 次移位操作，得到的递归式：<br>$$T(n)=4T(n/2)+\Theta(n)=\Theta(n^2)$$ 居然没有提高！！好吧，想想办法！<br>$$(x_L+x_R)(y_L+y_R) = x_Ly_L+(x_Ly_R + x_Ry_L) + x_Ry_R$$我们不妨写为 $P_0=P_1+P_2+P_3$，这里的 $P_1,P_2,P_3$ 都是我们要在上面过程中计算的，通过计算 $(x_L+x_R)(y_L+y_R)$，代价为 $O(n)$，反解出 $(x_Ly_R + x_Ry_L)$，原本的4个子问题减少为3个啦，递归式：<br>$$T(n)=3T(n/2)+\Theta(n)=\Theta(n^{\log_2 3})$$ </p>
+<h2 id="矩阵乘法"><a href="#矩阵乘法" class="headerlink" title="矩阵乘法"></a>矩阵乘法</h2><p>这里定义的矩阵都是 $n\times n$ 的矩阵，规定的 Elementary Operations，加法和两个元素间的乘法复杂度均为 $O(1)$ 。<br>这样，对于结果的 $n^2$ 个元素，每个都需要进行 $n$ 次加法和 $n$ 次乘法，所以总的复杂度为 $O(n^3)$，Oh no，这很吓人！<br>想想递归，如果我们像上面整数乘法的方法一样，对矩阵进行分块呢？$$X=\left[<br>\begin{array}{c|c}<br>A &amp; B \\ \hline<br>C &amp; D<br>\end{array}<br>\right],\quad Y=\left[<br>\begin{array}{c|c}<br>E &amp; F \\ \hline<br>G &amp; H<br>\end{array}<br>\right]$$那么$$XY =\left[<br>\begin{array}{c|c}<br>AE+BG &amp; AF+BH \\ \hline<br>CE+DG &amp; CF+DH<br>\end{array}<br>\right]$$<br>这里的 Combine 的复杂度主要体现在矩阵的加法上，$\dfrac{n}{2}\times\dfrac{n}{2}$ 个数相加，复杂度为 $\Theta(n^2)$，我们来看看递归式<br>$$T(n)=8T(n/2)+\Theta(n^2)=\Theta(n^3)$$<br>还是没变！！当然，我们可以继续用上一问题中的技巧（Strassen Algorithm），可以降到只需解决 7 个规模为 $n/2$ 的子问题，最终$$T(n)=\Theta(n^{\log_2 7})=\Theta(n^{2.808})$$<br>一个好消息是，在 2014 年，矩阵乘法问题的复杂度已经降到了 $\Theta(n^{2.373})$，可喜可贺！问题的下界也只不过是 $\Omega(n^2)$</p>
+<h2 id="计算-lceil-sqrt-N-rceil"><a href="#计算-lceil-sqrt-N-rceil" class="headerlink" title="计算 $\lceil\sqrt{N}\ \rceil$"></a>计算 $\lceil\sqrt{N}\ \rceil$</h2><p>为了简化讨论，我们规定 n-bit+n-bit 的复杂度为 $O(1)$，移位操作和 1-bit 乘 n-bit 的操作也仍均为 $O(1)$，所以，我们计算一次 $x^2$ 的代价为 $O(n)$。<br>直接寻找（从 1 开始 till the end of the world）方法的话，复杂度能达到 $O(2^n\cdot n)$ ；<br>好一点的办法就是使用二分查找，能够降低到 $O(n\cdot n)$<br>我们想想能不能缩小二分查找的范围呢？注意到$$2^{\left\lfloor\dfrac{n-1}{2}\right\rfloor} \leq \lceil\sqrt{N}\ \rceil \leq 2^{\left\lfloor\dfrac{n}{2}\right\rfloor}$$可是这样的查找长度在进行 $\log$ 操作后，得到的结果仍然为 $n$ ，在大 $O$ 的意义下并未改进。<br>哈哈，下面给出一种线性时间的算法！注意，不是 $\Theta(n\log n)$，是 $\Theta(n)$，前方高能！！！<br>考虑 $M =\lfloor N/4 \rfloor, \quad x = \lceil \sqrt{M} \ \rceil,$ 和 $ (x, x^2)$，每次规模降低 2，除以 4 即可以右移 2 位。<br>那么我们要的 $y=\lceil \sqrt{N} \ \rceil$ 和 $(y,y^2)$ 和这个的关系呢？大致可以分为下面三种：$$(y,y^2)=\left\{<br>\begin{array}{ll}<br>y=2x, &amp; y^2=4x^2 \<br>y=2x+1, &amp; y^2=4x^2+4x+1 \<br>y=2x-1, &amp; y^2=4x^2-4x+1<br>\end{array}\right.$$ 我们只保留其中最接近 $y^2$ 的一个作为递归的下一步。那么每次 Combine 的代价也仅仅是常数时间 $O(1)$ 。这样，我们得到了一个新的递归式：注意规模不是变为 $1/4$，$n$ 是 $N$ 的比特长度。<br>$$T(n)=T(n-2)+O(1)=\Theta(n)$$</p>
+<h2 id="VLSI-Layout，布线问题"><a href="#VLSI-Layout，布线问题" class="headerlink" title="VLSI Layout，布线问题"></a>VLSI Layout，布线问题</h2><p>问题是：有一以完全的满二叉树结构形态的数字电路需要排布到面包板上，不能有交叉点，请给出一种高效的算法来计算布线的最小面积（最大长度 $\times$ 最大宽度）。<br>如果我们直接布线的话，由于二叉树结构的特殊性，两个子树加上一个根节点就是一个深度 +1 的新的满二叉树，所以，我们递归的规模可以缩减规模的一半。<br>这样的话，从高度来说，子问题的个数仍然是 1 个，所以 $Height(n)=Height(\dfrac{n}{2})+\Theta(1)=\Theta(\log n)$<br>那么宽度呢？fuck，居然是要变成两个子问题，所以 $Width(n)=2\times Width(\dfrac{n}{2})+\Theta(1)=\Theta(n)$<br> 面积 $Area(n)=Height(n) \times Width(n) = \Theta(n \log n)$<br> 其实，这种方法看起来还不错啦~就像这样</p>
+<p><img src="http://images.cnitblog.com/blog/632767/201411/080134160342840.png" alt="1 排线"></p>
+<p>那么，有没有更好的办法呢？那么往下就可能是 $\Theta(n)$<br>猜猜看，高度和宽度都要是什么呢？（$1\times n$，$\sqrt{N} \times \sqrt{N}$，$\dfrac{n}{\log n} \times\log n$）??<br>我们给出一种采用的 $\sqrt{N} \times \sqrt{N}$ 方式，要达到 $\Theta(\sqrt{n})$ 的复杂度，那么从 Master Thm 上来看，高度和宽度可能是这样一种递归式：$$T(n)=2T(n/4)+\Theta(1)$$那是怎么排线的呢？</p>
+<p><img src="http://images.cnitblog.com/blog/632767/201411/080136295969069.png" alt="2排线"></p>
+<p>太厉害，太牛B啦，有木有！！我还是第一次见到这样的二叉树，见识浅陋啊<del>~</del><br>再次感谢助教！！</p>
+<h2 id="Would-you-like-to-see…"><a href="#Would-you-like-to-see…" class="headerlink" title="Would you like to see…"></a>Would you like to see…</h2><h3 id="Amortized-Analysis"><a href="#Amortized-Analysis" class="headerlink" title="Amortized Analysis"></a><a href="https://qiufengyu.github.io/2014/11/08/amortized-analysis/">Amortized Analysis</a></h3><h3 id="Adversary-Argument"><a href="#Adversary-Argument" class="headerlink" title="Adversary Argument"></a><a href="https://qiufengyu.github.io/2014/11/09/adversary-argument/">Adversary Argument</a></h3>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2014/shortest-path/" rel="prev" title="Algorithm - 图的最短路径算法">
+      <i class="fa fa-chevron-left"></i> Algorithm - 图的最短路径算法
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2014/amortized-analysis/" rel="next" title="Algorithm - Amortized Analysis">
+      Algorithm - Amortized Analysis <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Master-Theory"><span class="nav-number">1.</span> <span class="nav-text">Master Theory</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#n-bit整数的乘法"><span class="nav-number">2.</span> <span class="nav-text">n-bit整数的乘法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#矩阵乘法"><span class="nav-number">3.</span> <span class="nav-text">矩阵乘法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#计算-lceil-sqrt-N-rceil"><span class="nav-number">4.</span> <span class="nav-text">计算 $\lceil\sqrt{N}\ \rceil$</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VLSI-Layout，布线问题"><span class="nav-number">5.</span> <span class="nav-text">VLSI Layout，布线问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Would-you-like-to-see…"><span class="nav-number">6.</span> <span class="nav-text">Would you like to see…</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Amortized-Analysis"><span class="nav-number">6.1.</span> <span class="nav-text">Amortized Analysis</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Adversary-Argument"><span class="nav-number">6.2.</span> <span class="nav-text">Adversary Argument</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Godfray Qiu"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Godfray Qiu</p>
+  <div class="site-description" itemprop="description">清纯佳人白玫瑰，高冷酸假</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">33</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">50</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/qiufengyu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;qiufengyu" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:mrqiufengyu@gmail.com" title="E-Mail → mailto:mrqiufengyu@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/237533031" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;237533031" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/qiufengyu" title="Facebook → https:&#x2F;&#x2F;www.facebook.com&#x2F;qiufengyu" rel="noopener" target="_blank"><i class="fa fa-fw fa-facebook"></i>Facebook</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/GodfrayQiu" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;GodfrayQiu" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://instagram.com/godfrayqiu" title="Instagram → http:&#x2F;&#x2F;instagram.com&#x2F;godfrayqiu" rel="noopener" target="_blank"><i class="fa fa-fw fa-instagram"></i>Instagram</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/qiufengyu" title="LinkedIn → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;qiufengyu" rel="noopener" target="_blank"><i class="fa fa-fw fa-linkedin"></i>LinkedIn</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://space.bilibili.com/6625805" title="Bilibili → http:&#x2F;&#x2F;space.bilibili.com&#x2F;6625805" rel="noopener" target="_blank"><i class="fa fa-fw fa-youtube"></i>Bilibili</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Godfray Qiu</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes : 0,
+          toolbar  : 0,
+          statusbar: 0,
+          pagemode : 'thumbs',
+          view     : 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '1220px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

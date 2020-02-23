@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon.ico">
+  <link rel="mask-icon" href="/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"qiufengyu.github.io","root":"/","scheme":"Gemini","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="对手论证，一般用于给出问题的下界。若用 $P$ 表示所讨论的问题，$I$ 表示问题的输入，$A$ 表示解决问题的基于比较运算的算法，$T(,A,,I)$ 表示对于输入 $I$，算法 $A$ 的计算时间复杂性，那么函数 $U(n)&#x3D;min\{ max \{ T(A,,I) \},\text{ for each } I \},\text{for each } A$ 表示问题 $P$ 在输入大小为 $n">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Algorithm - Adversary Argument">
+<meta property="og:url" content="http://qiufengyu.github.io/2014/adversary-argument/">
+<meta property="og:site_name" content="Heaven&#39;s Wall">
+<meta property="og:description" content="对手论证，一般用于给出问题的下界。若用 $P$ 表示所讨论的问题，$I$ 表示问题的输入，$A$ 表示解决问题的基于比较运算的算法，$T(,A,,I)$ 表示对于输入 $I$，算法 $A$ 的计算时间复杂性，那么函数 $U(n)&#x3D;min\{ max \{ T(A,,I) \},\text{ for each } I \},\text{for each } A$ 表示问题 $P$ 在输入大小为 $n">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://images.cnitblog.com/blog/632767/201411/090046262685217.png">
+<meta property="og:image" content="http://images.cnitblog.com/blog/632767/201411/090048387069188.png">
+<meta property="article:published_time" content="2014-11-09T11:36:16.000Z">
+<meta property="article:modified_time" content="2020-02-23T12:58:51.099Z">
+<meta property="article:author" content="Godfray Qiu">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://images.cnitblog.com/blog/632767/201411/090046262685217.png">
+
+<link rel="canonical" href="http://qiufengyu.github.io/2014/adversary-argument/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>Algorithm - Adversary Argument | Heaven's Wall</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta custom-logo">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Heaven's Wall</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">落尽红樱君不见，轻绘梨花泪沾衣</p>
+      <a>
+        <img class="custom-logo-image" src="/images/custom-logo.jpg" alt="Heaven's Wall">
+      </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://qiufengyu.github.io/2014/adversary-argument/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Godfray Qiu">
+      <meta itemprop="description" content="清纯佳人白玫瑰，高冷酸假">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Heaven's Wall">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Algorithm - Adversary Argument
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2014-11-09 19:36:16" itemprop="dateCreated datePublished" datetime="2014-11-09T19:36:16+08:00">2014-11-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-02-23 20:58:51" itemprop="dateModified" datetime="2020-02-23T20:58:51+08:00">2020-02-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Algorithm/" itemprop="url" rel="index"><span itemprop="name">Algorithm</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>对手论证，一般用于给出问题的下界。若用 $P$ 表示所讨论的问题，$I$ 表示问题的输入，$A$ 表示解决问题的基于比较运算的算法，$T(,A,,I)$ 表示对于输入 $I$，算法 $A$ 的计算时间复杂性，那么函数 $U(n)=min\{ max \{ T(A,,I) \},\text{ for each } I \},\text{for each } A$ 表示问题 $P$ 在输入大小为 $n$ 时在最坏情况下的最好时间下界，它是问题所固有的。</p>
+<a id="more"></a>
+<p>对手论证的基本思想是对每一个 $A$ 构造一个输入特殊的输入 $I’$，使 $T(A,,I’)$ 尽量地大，然后在所有 $A$ 的集合上，求 $T(A,,I’)$ 的尽量小的下界作为 $f(n)$。对手论证方法的关键在于有一套对于一切 $A$ 的适用的构造符合要求的 $I’$ 的策略，即对手策略，逐步第构造出一个输入 $I’$，使算法 $A$ 如果想达到预期的结果，要做尽量多次的比较和判断，从而使 $T(A,,I’)$ 尽量大。需要注意的是，一方面对手策略需具有一致性，即不能前后矛盾，以保证 $I’$ 的存在性；另一方面对手策略还必须对一切 $A$ 都适用，因为我们需要在一切 $A$ 组成的集合上求 $T(A,,I’)$ 的下界。</p>
+<h2 id="Find-2-nd-Largest-Number"><a href="#Find-2-nd-Largest-Number" class="headerlink" title="Find $2^{nd}$ Largest Number"></a>Find $2^{nd}$ Largest Number</h2><p>我们知道，找到数组中元素的最大值，需要至少进行 $n-1$ 次比较，那么找到第二大的呢？暴力算法就是在找一次最大呗，又是 $n-2$ 次比较，总共是 $2n-3$ 次比较。乍看起来也不错了，但是通过对手论证的分析，比较的总次数可以减少为 $n+\lceil \log n \rceil -2$ 次。How to？<br>其实，所谓的第二大的元素，应该是在比较中仅仅输给了最大元素，也就是说，只有跟最大的那个元素比过的败者才有可能是。我们下面要说明的是，我们要找的第二大的元素应该是在那些跟最大元素比过的 $\lceil \log n \rceil$ 个元素中。<br>在对手论证中，我们每次都是选择两两配对，然后进行比较，这样的话，每次配对完后的比较，数据规模都缩减一半，也就是说，总共经过 $\lceil \log n \rceil$ 轮的比较，把这些输给最大数的元素拿出来，进行一次 find-Max，开销是 $O(\lceil \log n \rceil)$ 就可以找到第二大的啦！！<br>这里其实并不是严格的论证，只是证明了这个界是可以达到的，详细证明请参见<a href="http://classes.soe.ucsc.edu/cmps201/Fall07/handouts/adversary.pdf" target="_blank" rel="noopener">这儿</a>。</p>
+<h2 id="Find-Max-and-Min"><a href="#Find-Max-and-Min" class="headerlink" title="Find Max and Min"></a>Find Max and Min</h2><p>这里也能够使用对手论证的方式得出其最少的比较次数为 $\left\lceil \frac{3}{2}n \right\rceil - 2$，具体的证明同样参见 <a href="http://classes.soe.ucsc.edu/cmps201/Fall07/handouts/adversary.pdf" target="_blank" rel="noopener">上述链接</a> 。<br>下面，我们就来说说是怎么办到的吧，首先两两配对，共进行 $\left\lceil \frac{1}{2}n \right\rceil$ 次比较，将这里面的胜者和败者分别分为两组，再在两组内分别挑选 Max 和 Min，代价是 $2\times (\left\lceil \frac{1}{2}n \right\rceil-1)$，这样就可以得到 Max 和 Min，总共的比较次数就是 $\left\lceil \frac{3}{2}n \right\rceil - 2$ 啦。</p>
+<h2 id="Matrix-Search"><a href="#Matrix-Search" class="headerlink" title="Matrix Search"></a>Matrix Search</h2><p>这个问题有一个十分美好的前提，那就是我们所给的 $n\times n$ 矩阵是行列皆有序的，在这样的条件下，我们要寻找某个元素 $x$ 在不在矩阵中，通过对手论证，我们可以做到线性时间 $O(n)$。<br>首先是一个并不高效的方法，对每一行采用二分搜索，最多搜索 $n$ 行，所以复杂度为 $O(n\log n)$。<br>这里有一个超级机智的算法，&lt;Step-wise 线性搜索&gt; 从右上角开始，每次将搜索值$x$ 与右上角的值比较，如果大于右上角的值，则直接去除1行，否则，则去掉1列。如下所示，展示了在矩阵中查找 $x=28$ 的过程：<br><img src="http://images.cnitblog.com/blog/632767/201411/090046262685217.png" alt="Find 28"><br>在对手论证中，我们只需要尽可能的构造一个数去查找，但是总是不满足条件，比如找不到的情况，就能达到最坏情况，而最短时间就是采用这种 <Step-wise> 方法了。这种查找方式最多也就是遍历完两遍对角线，总共的探查次数最多为 $n+n-1=2n-1$，所以复杂度为 $O(n)$。</p>
+<h2 id="25-Horses-select-1-st-2-nd-3-rd"><a href="#25-Horses-select-1-st-2-nd-3-rd" class="headerlink" title="25 Horses select $1^{st}, 2^{nd}, 3^{rd}$"></a>25 Horses select $1^{st}, 2^{nd}, 3^{rd}$</h2><p>问题描述：有 25 匹赛马，一片场地只有 5 条赛道，现在要求你用尽可能少的比赛场次来选出最快的前三名。<br>首先，至少每一匹马都有机会去跑一遍，所以至少要先比赛 5 场，得出总共 25 匹马的 5 个小组排名。接着，就是把每一组的冠军拿出来遛遛，第 6 场过后，我们就能选出冠军了，同时，我们也知道这第六场中的最后两名一定不可能是前三名了，因为他们至少都要输给已知的3匹马。顺带着，这两匹不可能的赛马所在小组里的马也都不可能了，想想小组第一都败了。（咦，当年翁学姐小组第一但是没出线就是这么一回事儿啊！！！）那么问题来了，下面只用一场比赛能够搞定么？答案是：可以！！<br>我们先给出竞赛的情况，<br><img src="http://images.cnitblog.com/blog/632767/201411/090048387069188.png" alt="match"><br>每一行上，从快到慢排序，不失一般性，小组第一的就是 $X1,\ X=A,B,C,D,E$，我们假设第六场比赛 $A1&gt;B1&gt;C1&gt;D1&gt;E1$，$&gt;$ 表示快的比较。那么 $A1$ 一定是冠军！下面可能是第二、第三的只可能是 $A2,,A3,,B1,,B2,,C1$ 这5个。为什么不可能是 $C2$ 呢？因为 $C2$ 至少输给了 $C1$，而 $C1$ 又至少输给了 $A1$ 和 $B1$，那么 $C2$ 的最好成绩也不过是第四，其他的情况也是类似的分析。<br>所以在这第七场，遛一遛 $A2,,A3,,B1,,B2,,C1$，就有第二、第三名产生了。</p>
+<p>算法的 Mid-Exam 的三大分析方法至此完结撒花！</p>
+<h2 id="Would-you-like-to-see…"><a href="#Would-you-like-to-see…" class="headerlink" title="Would you like to see…"></a>Would you like to see…</h2><h3 id="Divide-and-Conquer"><a href="#Divide-and-Conquer" class="headerlink" title="Divide and Conquer"></a><a href="https://qiufengyu.github.io/2014/11/07/divide-and-conquer/">Divide and Conquer</a></h3><h3 id="Amortized-Analysis"><a href="#Amortized-Analysis" class="headerlink" title="Amortized Analysis"></a><a href="https://qiufengyu.github.io/2014/11/08/amortized-analysis/">Amortized Analysis</a></h3>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2014/amortized-analysis/" rel="prev" title="Algorithm - Amortized Analysis">
+      <i class="fa fa-chevron-left"></i> Algorithm - Amortized Analysis
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/digital-ocean-vps/" rel="next" title="DigitalOcean：Ubuntu VPS 下配置VPN">
+      DigitalOcean：Ubuntu VPS 下配置VPN <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Find-2-nd-Largest-Number"><span class="nav-number">1.</span> <span class="nav-text">Find $2^{nd}$ Largest Number</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Find-Max-and-Min"><span class="nav-number">2.</span> <span class="nav-text">Find Max and Min</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Matrix-Search"><span class="nav-number">3.</span> <span class="nav-text">Matrix Search</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#25-Horses-select-1-st-2-nd-3-rd"><span class="nav-number">4.</span> <span class="nav-text">25 Horses select $1^{st}, 2^{nd}, 3^{rd}$</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Would-you-like-to-see…"><span class="nav-number">5.</span> <span class="nav-text">Would you like to see…</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Divide-and-Conquer"><span class="nav-number">5.1.</span> <span class="nav-text">Divide and Conquer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Amortized-Analysis"><span class="nav-number">5.2.</span> <span class="nav-text">Amortized Analysis</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Godfray Qiu"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Godfray Qiu</p>
+  <div class="site-description" itemprop="description">清纯佳人白玫瑰，高冷酸假</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">33</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">50</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/qiufengyu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;qiufengyu" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:mrqiufengyu@gmail.com" title="E-Mail → mailto:mrqiufengyu@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/237533031" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;237533031" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/qiufengyu" title="Facebook → https:&#x2F;&#x2F;www.facebook.com&#x2F;qiufengyu" rel="noopener" target="_blank"><i class="fa fa-fw fa-facebook"></i>Facebook</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/GodfrayQiu" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;GodfrayQiu" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://instagram.com/godfrayqiu" title="Instagram → http:&#x2F;&#x2F;instagram.com&#x2F;godfrayqiu" rel="noopener" target="_blank"><i class="fa fa-fw fa-instagram"></i>Instagram</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/qiufengyu" title="LinkedIn → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;qiufengyu" rel="noopener" target="_blank"><i class="fa fa-fw fa-linkedin"></i>LinkedIn</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://space.bilibili.com/6625805" title="Bilibili → http:&#x2F;&#x2F;space.bilibili.com&#x2F;6625805" rel="noopener" target="_blank"><i class="fa fa-fw fa-youtube"></i>Bilibili</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Godfray Qiu</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes : 0,
+          toolbar  : 0,
+          statusbar: 0,
+          pagemode : 'thumbs',
+          view     : 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '1220px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon.ico">
+  <link rel="mask-icon" href="/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"qiufengyu.github.io","root":"/","scheme":"Gemini","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="实习开始，头儿让我一起参与数据库服务器迁移的项目，是 Flume+Kafka+HBase(Storm)+Hadoop 的解决方案。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="大数据之 Kafka">
+<meta property="og:url" content="http://qiufengyu.github.io/2015/kafka/">
+<meta property="og:site_name" content="Heaven&#39;s Wall">
+<meta property="og:description" content="实习开始，头儿让我一起参与数据库服务器迁移的项目，是 Flume+Kafka+HBase(Storm)+Hadoop 的解决方案。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://static.oschina.net/uploads/space/2012/1129/184449_rAo6_589742.png">
+<meta property="og:image" content="http://static.oschina.net/uploads/space/2012/1129/184508_93uG_589742.jpg">
+<meta property="og:image" content="http://kafka.apache.org/images/log_anatomy.png">
+<meta property="article:published_time" content="2015-07-23T11:51:49.000Z">
+<meta property="article:modified_time" content="2017-09-17T10:09:30.000Z">
+<meta property="article:author" content="Godfray Qiu">
+<meta property="article:tag" content="Internship">
+<meta property="article:tag" content="Kafka">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://static.oschina.net/uploads/space/2012/1129/184449_rAo6_589742.png">
+
+<link rel="canonical" href="http://qiufengyu.github.io/2015/kafka/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>大数据之 Kafka | Heaven's Wall</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta custom-logo">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Heaven's Wall</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">落尽红樱君不见，轻绘梨花泪沾衣</p>
+      <a>
+        <img class="custom-logo-image" src="/images/custom-logo.jpg" alt="Heaven's Wall">
+      </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://qiufengyu.github.io/2015/kafka/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Godfray Qiu">
+      <meta itemprop="description" content="清纯佳人白玫瑰，高冷酸假">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Heaven's Wall">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          大数据之 Kafka
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2015-07-23 19:51:49" itemprop="dateCreated datePublished" datetime="2015-07-23T19:51:49+08:00">2015-07-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2017-09-17 18:09:30" itemprop="dateModified" datetime="2017-09-17T18:09:30+08:00">2017-09-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Big-Data/" itemprop="url" rel="index"><span itemprop="name">Big Data</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">实习开始，头儿让我一起参与数据库服务器迁移的项目，是 Flume+Kafka+HBase(Storm)+Hadoop 的解决方案。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="大数据框架简介"><a href="#大数据框架简介" class="headerlink" title="大数据框架简介"></a>大数据框架简介</h2><p>可以参照这篇文章：<a href="http://www.aboutyun.com/thread-6855-1-1.html" target="_blank" rel="noopener">大数据架构：flume-ng+Kafka+Storm+HDFS 实时系统组合</a></p>
+<h2 id="Kafka-简介"><a href="#Kafka-简介" class="headerlink" title="Kafka 简介"></a>Kafka 简介</h2><h3 id="Kafka-综述"><a href="#Kafka-综述" class="headerlink" title="Kafka 综述"></a>Kafka 综述</h3><p>Kafka 是一个分布式发布订阅消息系统。对于网页中的流动数据（页面访问量、搜索情况等），通常的处理方式是先把各种活动以日志的形式写入某种文件，然后周期性地对这些文件进行统计分析。</p>
+<h3 id="Kafka-架构设计"><a href="#Kafka-架构设计" class="headerlink" title="Kafka 架构设计"></a>Kafka 架构设计</h3><p>我们将消息的发布（publish）称作 producer，将消息的订阅（subscribe）表述为 consumer，将中间的存储阵列称作 broker，这样我们就可以大致描绘出这样一个场面：<br><img src="http://static.oschina.net/uploads/space/2012/1129/184449_rAo6_589742.png" alt="producer+broker+consumer"><br>生产者将数据生产出来，丢给 broker 进行存储，消费者需要消费数据了，就从broker中去拿出数据来，然后完成一系列对数据的处理。<br><img src="http://static.oschina.net/uploads/space/2012/1129/184508_93uG_589742.jpg" alt="Kafka架构"><br>多个 broker 协同合作，producer 和 consumer 部署在各个业务逻辑中被频繁的调用，三者通过 zookeeper 管理协调请求和转发。这样一个高性能的分布式消息发布与订阅系统就完成了。图上有个细节需要注意，producer 到 broker 的过程是 push，也就是有数据就推送到 broker，而 consumer 到 broker 的过程是 pull，是通过 consumer 主动去拉数据的，而不是 broker 把数据主动发送到 consumer 端的。这样就能一定程度上缓解 producer 和 consumer 之间对资源竞争的冲突，像一种异步通信方式。</p>
+<h3 id="主题和日志"><a href="#主题和日志" class="headerlink" title="主题和日志"></a>主题和日志</h3><p>Topics（主题）是 Kafka 中的一个高级抽象概念，producer 向某个确定的 Topic 发布消息，对应地，consumer 也向某个确定的 Topic 订阅消息。对于每个 topic，Kafka 会维护一个如下所示的日志分组队列：<br><img src="http://kafka.apache.org/images/log_anatomy.png" alt="Kafka topics and logs"><br>新的日志都直接加在每个消息队列的最后，通过一个 Offset 偏移量来访问每一条日志信息。并且我们可以设置一个过期时间，超过一般为两天为限，就会把这些没有被消费的日志清楚，释放空间。<br><a href="http://my.oschina.net/ielts0909/blog/92972" target="_blank" rel="noopener">Reference</a> Here.</p>
+<h2 id="快速入门"><a href="#快速入门" class="headerlink" title="快速入门"></a>快速入门</h2><h3 id="运行环境"><a href="#运行环境" class="headerlink" title="运行环境"></a>运行环境</h3><p>操作系统：CentOS 6.5（64位）（VMware 虚拟机）<br>JDK 版本：<a href="http://www.oracle.com/technetwork/java/javase/downloads/java-archive-downloads-javase7-521261.html#jdk-7u79-oth-JPR" target="_blank" rel="noopener">1.7.0_79</a>（对 1.8 的支持可能存在一些问题，建议 1.7 即可）<br>Kafka版本：<a href="http://kafka.apache.org/downloads.html" target="_blank" rel="noopener">0.8.2.1</a>，我下载的是带有 Scala 的二进制文件，较为便捷。kafka_2.11-0.8.2.1.tgz，截止当前为最新稳定版。</p>
+<h3 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h3><h4 id="JDK"><a href="#JDK" class="headerlink" title="JDK"></a>JDK</h4><p>假设 JDK 环境配置已经完成，如果还没有配置，请参看 <a href="http://www.centoscn.com/image-text/install/2014/0827/3585.html" target="_blank" rel="noopener">这里</a>。</p>
+<h4 id="解压缩"><a href="#解压缩" class="headerlink" title="解压缩"></a>解压缩</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">tar -xzf kafka_2.11-0.8.2.1.tgz </span><br></pre></td></tr></table></figure>
+也可以指定 Extract 的目录，加上`-C 指定目录`即可。
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> kafka_2.11-0.8.2.1.tgz</span><br></pre></td></tr></table></figure>
+<h3 id="运行服务器"><a href="#运行服务器" class="headerlink" title="运行服务器"></a>运行服务器</h3><p>Kafka 使用 ZooKeeper 作为服务器，这在我们下载的包中已经有一个单节点的 ZooKeeper 服务实例。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">bin/zookeeper-server-start.sh config/zookeeper.properties</span><br></pre></td></tr></table></figure>
+会输出一些运行信息
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[2015-07-23 16:26:01,356] INFO Reading configuration from: config/zookeeper.properties (org.apache.zookeeper.server.quorum.QuorumPeerConfig)</span><br><span class="line">[2015-07-23 16:26:01,358] INFO autopurge.snapRetainCount <span class="built_in">set</span> to 3 (org.apache.zookeeper.server.DatadirCleanupManager)</span><br><span class="line">...</span><br><span class="line">[2015-07-23 16:26:01,490] INFO binding to port 0.0.0.0/0.0.0.0:2181 (org.apache.zookeeper.server.NIOServerCnxnFactory)</span><br></pre></td></tr></table></figure>
+<p>运行 Kafka 服务器，</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">bin/kafka-server-start.sh config/server.properties</span><br><span class="line">[2015-07-23 16:30:51,956] INFO Verifying properties (kafka.utils.VerifiableProperties)</span><br><span class="line">[2015-07-23 16:30:52,043] INFO Property broker.id is overridden to 0 (kafka.utils.VerifiableProperties)</span><br><span class="line">...</span><br><span class="line">[2015-07-23 16:37:02,576] FATAL [Kafka Server 0], Fatal error during KafkaServer startup. Prepare to shutdown (kafka.server.KafkaServer)</span><br><span class="line">org.I0Itec.zkclient.exception.ZkTimeoutException: Unable to connect to zookeeper server within timeout: 6000</span><br></pre></td></tr></table></figure>
+<p>连接失败了，但是不用担心，我们需要使用 sudo 权限！本地测试时，如果仅仅使用 sudo 会提示 <code>exec: java: not found</code> 的异常，所以请使用 <code>su</code> 进入超级用户模式，以后的其他操作也请在超级模式，使用 ‘#’ 作为提示符。<br>终于，两边分别有提示连接成功的输出：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"> <span class="comment"># Zookeeper Server部分</span></span><br><span class="line">[2015-07-23 16:39:32,106] INFO Accepted socket connection from /0:0:0:0:0:0:0:1:47857 (org.apache.zookeeper.server.NIOServerCnxnFactory)</span><br><span class="line">...</span><br><span class="line">[2015-07-23 16:45:52,347] INFO Established session 0x14eba1705cf0000 with negotiated timeout 6000 <span class="keyword">for</span> client /127.0.0.1:43744 (org.apache.zookeeper.server.ZooKeeperServer)</span><br><span class="line">&gt; <span class="comment"># Kafka Server部分</span></span><br><span class="line">[2015-07-23 16:45:52,247] INFO Opening socket connection to server localhost/127.0.0.1:2181. Will not attempt to authenticate using SASL (unknown error) (org.apache.zookeeper.ClientCnxn)</span><br><span class="line">...</span><br><span class="line">[2015-07-23 16:45:52,645] INFO 0 successfully elected as leader (kafka.server.ZookeeperLeaderElector)</span><br><span class="line">[2015-07-23 16:45:52,867] INFO New leader is 0 (kafka.server.ZookeeperLeaderElector<span class="variable">$LeaderChangeListener</span>)</span><br><span class="line">[2015-07-23 16:45:52,867] INFO Registered broker 0 at path /brokers/ids/0 with address localhost:9092. (kafka.utils.ZkUtils$)</span><br><span class="line">[2015-07-23 16:45:52,888] INFO [Kafka Server 0], started (kafka.server.KafkaServer)</span><br></pre></td></tr></table></figure>
+<h3 id="创建Topic"><a href="#创建Topic" class="headerlink" title="创建Topic"></a>创建Topic</h3><p>我们首先创建一个只有一个 Broker 分组、只有一个副本的话题，test </p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic <span class="built_in">test</span></span><br></pre></td></tr></table></figure>
+我们可以测试一下是否创建成功，首先会有提示 `Created topic "test"`，使用命令：
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">bin/kafka-topics.sh --list --zookeeper localhost:2181</span><br></pre></td></tr></table></figure>
+<p><code>list</code>命令提示<code>test</code>，说明创建成功。</p>
+<h3 id="发送消息"><a href="#发送消息" class="headerlink" title="发送消息"></a>发送消息</h3><p>我们在 test 这个主题下，使用 Producer 发送一些消息</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">bin/kafka-console-producer.sh --broker-list localhost:9092 --topic <span class="built_in">test</span></span><br><span class="line">hi, what<span class="string">'s your name?</span></span><br><span class="line"><span class="string">nihao~memeda~啵啵叽</span></span><br><span class="line"><span class="string">Test ending..... </span></span><br></pre></td></tr></table></figure>
+<p>输入一些消息，下面我们创建 Consumer 来消费。这里的一些参数可以通过输入</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">bin/kafka-console-producer.sh</span><br></pre></td></tr></table></figure>
+命令来查看具体说明，下面的 consumer 也是一样。
+### 订阅消息
+在 test 这个主题下，使用 Consumer 来消费这些日志消息
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">bin/kafka-console-consumer.sh --zookeeper localhost:2181 --topic <span class="built_in">test</span> --from-beginning</span><br></pre></td></tr></table></figure>
+<p>我们得到如下信息，表明信息的发布和订阅都成功了~！</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">bin/kafka-console-producer.sh --broker-list localhost:9092 --topic <span class="built_in">test</span></span><br><span class="line">hi, what<span class="string">'s your name?</span></span><br><span class="line"><span class="string">nihao~memeda~啵啵叽</span></span><br><span class="line"><span class="string">Test ending.....</span></span><br><span class="line"><span class="string">^CConsumed 3 messages</span></span><br></pre></td></tr></table></figure>
+<h2 id="单机版的多-Broker-方式"><a href="#单机版的多-Broker-方式" class="headerlink" title="单机版的多 Broker 方式"></a>单机版的多 Broker 方式</h2><h3 id="两台服务器"><a href="#两台服务器" class="headerlink" title="两台服务器"></a>两台服务器</h3><p>我们假设有两台服务器，使用不同的端口进行连接。首先我们先为每一个 broker 建立一个服务器的配置文件</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">cp config/server.properties config/server-1.properties</span><br><span class="line">cp config/server.properties config/server-2.properties</span><br></pre></td></tr></table></figure>
+<p>分别在这些文件中修改为如下内容：</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">config/server-1.properties:</span></span><br><span class="line">    <span class="string">broker.id=1</span></span><br><span class="line">    <span class="string">port=9093</span></span><br><span class="line">    <span class="string">log.dir=/tmp/kafka-logs-1</span> </span><br><span class="line"><span class="attr">config/server-2.properties:</span></span><br><span class="line">    <span class="string">broker.id=2</span></span><br><span class="line">    <span class="string">port=9094</span></span><br><span class="line">    <span class="string">log.dir=/tmp/kafka-logs-2</span></span><br></pre></td></tr></table></figure>
+<p>此时我们运行 Kafka 的两台服务器，’&amp;’ 表示可以在后台运行</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">bin/kafka-server-start.sh config/server-1.properties &amp;</span><br><span class="line">bin/kafka-server-start.sh config/server-2.properties &amp; </span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"> <span class="comment"># server-1, 被选为leader</span></span><br><span class="line">[2015-07-23 17:09:29,281] INFO 1 successfully elected as leader (kafka.server.ZookeeperLeaderElector)</span><br><span class="line">[2015-07-23 17:09:29,497] INFO Registered broker 1 at path /brokers/ids/1 with address localhost:9093. (kafka.utils.ZkUtils$)</span><br><span class="line">[2015-07-23 17:09:29,501] INFO New leader is 1 (kafka.server.ZookeeperLeaderElector<span class="variable">$LeaderChangeListener</span>)</span><br><span class="line">[2015-07-23 17:09:29,508] INFO [Kafka Server 1], started (kafka.server.KafkaServer)</span><br><span class="line">&gt; <span class="comment"># server-2</span></span><br><span class="line">[2015-07-23 17:10:03,602] INFO Registered broker 2 at path /brokers/ids/2 with address localhost:9094. (kafka.utils.ZkUtils$)</span><br><span class="line">[2015-07-23 17:10:03,623] INFO [Kafka Server 2], started (kafka.server.KafkaServer)</span><br></pre></td></tr></table></figure>
+<h3 id="创建新的话题"><a href="#创建新的话题" class="headerlink" title="创建新的话题"></a>创建新的话题</h3><p>创建一个新的话题，叫做 multitest，注意这里的 <code>--replication-factor</code> 参数，表示了 server 的个数，不能超过当前的所有 running 的服务器个数。（加上前面的一共有三个，这里 1，2，3 都是可以的，但是 &gt;=4 不行)</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 2 --partitions 1 --topic multitest</span><br></pre></td></tr></table></figure>
+提示 `Created topic "multitest".` 我们可以通过 describe 的方式来查询一个主题的信息，如输入
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"> bin/kafka-topics.sh --describe --zookeeper localhost:2181 --topic multitest</span><br><span class="line">Topic: multitest PartitionCount:1 ReplicationFactor:2 Configs:</span><br><span class="line">Topic: multitest Partition: 0 Leader: 1 Replicas: 2,1 Isr: 1,2 </span><br></pre></td></tr></table></figure>
+<h3 id="新的-Producer-和-Consumer"><a href="#新的-Producer-和-Consumer" class="headerlink" title="新的 Producer 和 Consumer"></a>新的 Producer 和 Consumer</h3><p>同上建立新的 Producer 发布消息日志，</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">bin/kafka-console-producer.sh --broker-list localhost:9092 --topic multitest</span><br></pre></td></tr></table></figure>
+输入 message1(2\3\4) 发布。
+建立新的 Consumer 去订阅消息日志，
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">bin/kafka-console-consumer.sh --zookeeper localhost:2181 --from-beginning --topic multitest</span><br><span class="line">message1</span><br><span class="line">message2</span><br><span class="line">message3</span><br><span class="line">message4 </span><br></pre></td></tr></table></figure>
+<h3 id="检测容错的机制"><a href="#检测容错的机制" class="headerlink" title="检测容错的机制"></a>检测容错的机制</h3><p>我们现在关闭 server-1</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ps | grep server-1.properties</span><br></pre></td></tr></table></figure>
+但是在新的版本中，并没有相关信息，直接通过 `ps` 查得进程，找到对应的，都以'java'标识，大约揣摩了一下，能够杀掉这个进程，请看人品，啧啧啧。然后再次执行
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">bin/kafka-topics.sh --describe --zookeeper localhost:2181 --topic multitest`</span><br><span class="line">Topic: multitest PartitionCount:1 ReplicationFactor:2 Configs: </span><br><span class="line">Topic: multitest Partition: 0 Leader: 2 Replicas: 2,1 Isr: 2 </span><br></pre></td></tr></table></figure>
+<p>如果此时再开启一个 Consumer ，仍然可以得到原本完整 4 条消息的日志。</p>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>其他完整且详细的资料请参看 <a href="http://my.oschina.net/ielts0909/blog/117489" target="_blank" rel="noopener">kafka系列文章</a>，本文也同时参考了 <a href="https://kafka.apache.org/quickstart" target="_blank" rel="noopener">Apache Kafka</a> 的官方文档。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Internship/" rel="tag"># Internship</a>
+              <a href="/tags/Kafka/" rel="tag"># Kafka</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/digital-ocean-vps/" rel="prev" title="DigitalOcean：Ubuntu VPS 下配置VPN">
+      <i class="fa fa-chevron-left"></i> DigitalOcean：Ubuntu VPS 下配置VPN
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/hbase/" rel="next" title="大数据之 HBase">
+      大数据之 HBase <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#大数据框架简介"><span class="nav-number">1.</span> <span class="nav-text">大数据框架简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Kafka-简介"><span class="nav-number">2.</span> <span class="nav-text">Kafka 简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Kafka-综述"><span class="nav-number">2.1.</span> <span class="nav-text">Kafka 综述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Kafka-架构设计"><span class="nav-number">2.2.</span> <span class="nav-text">Kafka 架构设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主题和日志"><span class="nav-number">2.3.</span> <span class="nav-text">主题和日志</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#快速入门"><span class="nav-number">3.</span> <span class="nav-text">快速入门</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#运行环境"><span class="nav-number">3.1.</span> <span class="nav-text">运行环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#准备工作"><span class="nav-number">3.2.</span> <span class="nav-text">准备工作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#JDK"><span class="nav-number">3.2.1.</span> <span class="nav-text">JDK</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解压缩"><span class="nav-number">3.2.2.</span> <span class="nav-text">解压缩</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#运行服务器"><span class="nav-number">3.3.</span> <span class="nav-text">运行服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建Topic"><span class="nav-number">3.4.</span> <span class="nav-text">创建Topic</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#发送消息"><span class="nav-number">3.5.</span> <span class="nav-text">发送消息</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#单机版的多-Broker-方式"><span class="nav-number">4.</span> <span class="nav-text">单机版的多 Broker 方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#两台服务器"><span class="nav-number">4.1.</span> <span class="nav-text">两台服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建新的话题"><span class="nav-number">4.2.</span> <span class="nav-text">创建新的话题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#新的-Producer-和-Consumer"><span class="nav-number">4.3.</span> <span class="nav-text">新的 Producer 和 Consumer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#检测容错的机制"><span class="nav-number">4.4.</span> <span class="nav-text">检测容错的机制</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他"><span class="nav-number">5.</span> <span class="nav-text">其他</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Godfray Qiu"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Godfray Qiu</p>
+  <div class="site-description" itemprop="description">清纯佳人白玫瑰，高冷酸假</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">33</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">50</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/qiufengyu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;qiufengyu" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:mrqiufengyu@gmail.com" title="E-Mail → mailto:mrqiufengyu@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/237533031" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;237533031" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/qiufengyu" title="Facebook → https:&#x2F;&#x2F;www.facebook.com&#x2F;qiufengyu" rel="noopener" target="_blank"><i class="fa fa-fw fa-facebook"></i>Facebook</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/GodfrayQiu" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;GodfrayQiu" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://instagram.com/godfrayqiu" title="Instagram → http:&#x2F;&#x2F;instagram.com&#x2F;godfrayqiu" rel="noopener" target="_blank"><i class="fa fa-fw fa-instagram"></i>Instagram</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/qiufengyu" title="LinkedIn → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;qiufengyu" rel="noopener" target="_blank"><i class="fa fa-fw fa-linkedin"></i>LinkedIn</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://space.bilibili.com/6625805" title="Bilibili → http:&#x2F;&#x2F;space.bilibili.com&#x2F;6625805" rel="noopener" target="_blank"><i class="fa fa-fw fa-youtube"></i>Bilibili</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Godfray Qiu</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes : 0,
+          toolbar  : 0,
+          statusbar: 0,
+          pagemode : 'thumbs',
+          view     : 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '1220px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

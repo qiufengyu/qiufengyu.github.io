@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon.ico">
+  <link rel="mask-icon" href="/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"qiufengyu.github.io","root":"/","scheme":"Gemini","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="也不算黑科技，在 Windows 10 上安装 Hadoop 环境，可以运行、测试一些简单的小程序。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hadoop on Windows 10">
+<meta property="og:url" content="http://qiufengyu.github.io/2018/hadoop-win10/">
+<meta property="og:site_name" content="Heaven&#39;s Wall">
+<meta property="og:description" content="也不算黑科技，在 Windows 10 上安装 Hadoop 环境，可以运行、测试一些简单的小程序。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://qiufengyu.github.io/2018/hadoop-win10/hadoop-1.PNG">
+<meta property="og:image" content="http://qiufengyu.github.io/2018/hadoop-win10/hadoop-2.PNG">
+<meta property="og:image" content="http://qiufengyu.github.io/2018/hadoop-win10/hadoop-3.PNG">
+<meta property="og:image" content="http://qiufengyu.github.io/2018/hadoop-win10/hadoop-4.PNG">
+<meta property="og:image" content="http://qiufengyu.github.io/2018/hadoop-win10/hadoop-5.PNG">
+<meta property="og:image" content="http://qiufengyu.github.io/2018/hadoop-win10/hadoop-6.PNG">
+<meta property="og:image" content="http://qiufengyu.github.io/2018/hadoop-win10/hadoop-7.PNG">
+<meta property="og:image" content="http://qiufengyu.github.io/2018/hadoop-win10/hadoop-8.PNG">
+<meta property="og:image" content="http://qiufengyu.github.io/2018/hadoop-win10/hadoop-9.PNG">
+<meta property="og:image" content="http://qiufengyu.github.io/2018/hadoop-win10/hadoop-10.PNG">
+<meta property="article:published_time" content="2018-03-14T16:00:00.000Z">
+<meta property="article:modified_time" content="2018-03-15T13:03:19.972Z">
+<meta property="article:author" content="Godfray Qiu">
+<meta property="article:tag" content="Hadoop">
+<meta property="article:tag" content="MapReduce">
+<meta property="article:tag" content="Windows 10">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://qiufengyu.github.io/2018/hadoop-win10/hadoop-1.PNG">
+
+<link rel="canonical" href="http://qiufengyu.github.io/2018/hadoop-win10/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>Hadoop on Windows 10 | Heaven's Wall</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta custom-logo">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Heaven's Wall</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">落尽红樱君不见，轻绘梨花泪沾衣</p>
+      <a>
+        <img class="custom-logo-image" src="/images/custom-logo.jpg" alt="Heaven's Wall">
+      </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://qiufengyu.github.io/2018/hadoop-win10/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Godfray Qiu">
+      <meta itemprop="description" content="清纯佳人白玫瑰，高冷酸假">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Heaven's Wall">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Hadoop on Windows 10
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2018-03-15 00:00:00 / 修改时间：21:03:19" itemprop="dateCreated datePublished" datetime="2018-03-15T00:00:00+08:00">2018-03-15</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/MapReduce/" itemprop="url" rel="index"><span itemprop="name">MapReduce</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">也不算黑科技，在 Windows 10 上安装 Hadoop 环境，可以运行、测试一些简单的小程序。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h3><ul>
+<li>安装并且配置好 JAVA 1.8，怕 JAVA 9 有坑；</li>
+<li>从 <a href="http://hadoop.apache.org/releases.html" target="_blank" rel="noopener">Apache Hadoop</a> 下载 Hadoop binary，这里使用的是 hadoop - 3.0.0 的版本；</li>
+<li>从 <a href="https://github.com/steveloughran/winutils" target="_blank" rel="noopener">Github</a> 上下载在 Windows 环境中需要运行的 <code>winutils.exe</code> 和 <code>hadoop.dll</code> 等“补丁”，选择对应的版本即可</li>
+</ul>
+<h3 id="Hadoop-Go"><a href="#Hadoop-Go" class="headerlink" title="Hadoop Go"></a>Hadoop Go</h3><ol>
+<li><p>将 <code>hadoop-3.0.0.tar.gz</code> 解压到某目录下，这个目录中不要有中文和空格，否则可能会引起问题，如这里解压到 <code>D:\hadoop-3.0.0</code></p>
+<p>同时，在环境变量 - 用户变量中新建 <code>HADOOP_HOME=D:\hadoop-3.0.0</code> </p>
+<p><img src="hadoop-1.PNG" alt="hadoop-1"></p>
+</li>
+</ol>
+<p>   在 <code>Path</code> 中添加 <code>%HADOOP_HOME%\bin</code> ，之后就可以在 cmd / powershell 中直接使用 <code>hadoop</code> 相关命令，不需要输入 Hadoop 的安装路径</p>
+<p>   <img src="hadoop-2.PNG" alt="hadoop-2"></p>
+<ol start="2">
+<li><p>进入 <code>hadoop-3.0.0/etc/hadoop</code> 中，进行 Hadoop 配置，修改 5 个文件</p>
+<ul>
+<li><p><code>hadoop-env.cmd</code> 中需要修改第 25 - 26 行，将原本的 <code>set JAVA_HOME=%JAVA_HOME%</code> 前面加上 <code>@rem</code>  注释，设置为本地的 <code>JAVA_HOME</code> 的路径。注意如果 <code>JAVA_HOME</code> 的路径中由空格，会引起错误（JAVA_HOME is incorrect…），此处，<code>C:\Program Files\Java\jdk1.8.0_162</code> 需要改为 <code>C:\Progra~1\Java\jdk1.8.0_162</code></p>
+</li>
+<li><p><code>core-site.xml</code> 中的 <code>&lt;configuration&gt;</code>  标签内填入</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;property&gt;</span><br><span class="line">       &lt;name&gt;fs.defaultFS&lt;&#x2F;name&gt;</span><br><span class="line">       &lt;value&gt;hdfs:&#x2F;&#x2F;localhost:9000&lt;&#x2F;value&gt;</span><br><span class="line">   &lt;&#x2F;property&gt;	</span><br><span class="line">&lt;property&gt;</span><br><span class="line">	&lt;name&gt;hadoop.tmp.dir&lt;&#x2F;name&gt;</span><br><span class="line">	&lt;value&gt;file:&#x2F;hadoop&#x2F;tmp&lt;&#x2F;value&gt;</span><br><span class="line">&lt;&#x2F;property&gt;</span><br></pre></td></tr></table></figure>
+
+<p>第二个设置的 <code>${hadoop.tmp.dir}</code> 的设置是因为，默认这个 <code>tmp</code> 文件在 C 盘，以普通用户启动的时候会有权限问题，必须要使用管理员身份运行 cmd，所以设置一个新的路径</p>
+</li>
+<li><p><code>hdfs-site.xml</code> 中的 <code>&lt;configuration&gt;</code>  标签内填入</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;property&gt;</span><br><span class="line">       &lt;name&gt;dfs.replication&lt;&#x2F;name&gt;</span><br><span class="line">       &lt;value&gt;1&lt;&#x2F;value&gt;</span><br><span class="line">   &lt;&#x2F;property&gt;</span><br><span class="line">   &lt;property&gt;</span><br><span class="line">      &lt;name&gt;dfs.namenode.name.dir&lt;&#x2F;name&gt;</span><br><span class="line">      &lt;value&gt;file:&#x2F;d:&#x2F;hadoop-3.0.0&#x2F;data&#x2F;namenode&lt;&#x2F;value&gt;</span><br><span class="line">   &lt;&#x2F;property&gt;</span><br><span class="line">   &lt;property&gt;</span><br><span class="line">      &lt;name&gt;dfs.datanode.data.dir&lt;&#x2F;name&gt;</span><br><span class="line">      &lt;value&gt;file:&#x2F;d:&#x2F;hadoop-3.0.0&#x2F;data&#x2F;datanode&lt;&#x2F;value&gt;</span><br><span class="line">   &lt;&#x2F;property&gt;</span><br></pre></td></tr></table></figure>
+
+<p>注意：这里需要在 <code>HADOOP_HOME</code> 中新建一个 <code>data</code> 文件夹，再进入 <code>data</code> 新建 <code>namenode</code> 和 <code>datanode</code>，也可以设置其他的名称，与设置中的一致即可。现在即便不新建，也会自动生成。也可以填写绝对路径，在 Windows 中，<code>&lt;value&gt;</code> 标签中的路径前需要一个 <code>/</code>，如 <code>/hadoop/data/namenode</code>、<code>/d:/hadoop/data/datanode</code> 等，不指名盘符，在之后通过 cmd 格式化 HDFS 时，就会当前盘符目录下生成对应的文件。</p>
+</li>
+<li><p><code>mapred-site.xml</code> （老版本好像只提供一个 <code>mapred-site.xml.template</code>，自己新建一个或者改成这个名字就行） 中的 <code>&lt;configuration&gt;</code>  标签内填入</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;property&gt;</span><br><span class="line">   &lt;name&gt;mapreduce.framework.name&lt;&#x2F;name&gt;</span><br><span class="line">   &lt;value&gt;yarn&lt;&#x2F;value&gt;</span><br><span class="line">&lt;&#x2F;property&gt;</span><br></pre></td></tr></table></figure></li>
+<li><p><code>yarn-site.xml</code>中的 <code>&lt;configuration&gt;</code>  标签内填入</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;property&gt;</span><br><span class="line">    &lt;name&gt;yarn.nodemanager.aux-services&lt;&#x2F;name&gt;</span><br><span class="line">    &lt;value&gt;mapreduce_shuffle&lt;&#x2F;value&gt;</span><br><span class="line">&lt;&#x2F;property&gt;</span><br><span class="line">&lt;property&gt;</span><br><span class="line">    &lt;name&gt;yarn.nodemanager.aux-services.mapreduce.shuffle.class&lt;&#x2F;name&gt;</span><br><span class="line">    &lt;value&gt;org.apache.hadoop.mapred.ShuffleHandler&lt;&#x2F;value&gt;</span><br><span class="line">&lt;&#x2F;property&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>替换 <code>hadoop-3.0.0/bin</code> 中的文件为 Github 上下载的文件内容，全部替换就行了，主要是 <code>winutils.exe</code> 和 <code>hadoop.dll</code>，不放心的可以把原来的文件做个备份。</p>
+</li>
+<li><p>格式化 HDFS 系统</p>
+<p>在 cmd / powershell 中输入 <code>hdfs namenode -format</code>，进行 HDFS 格式化，不报错就 OK，同时会在之前设置的路径中生成一些文件。</p>
+<p><img src="hadoop-3.PNG" alt="hadoop-3"></p>
+</li>
+<li><p>启动 Hadoop</p>
+<p>切换到 <code>hadoop-3.0.0/sbin</code> 目录中，执行 <code>.\start-all.cmd</code>，会启动四个服务，可以用 <code>jps</code> 指令查看：</p>
+<ul>
+<li><p>NameNode</p>
+</li>
+<li><p>DataNode</p>
+</li>
+<li><p>ResourceManager</p>
+</li>
+<li><p>NodeManager</p>
+<p><img src="hadoop-4.PNG" alt="hadoop-4"><br>​</p>
+</li>
+</ul>
+</li>
+<li><p>如果都成功启动，访问 <code>localhost:8088</code>，可以查看 Hadoop 的任务管理、查看界面</p>
+<p><img src="hadoop-5.PNG" alt="hadoop-5"><br>​</p>
+</li>
+<li><p>访问 <code>localhost:9870</code>，在 Hadoop 3.x 中已经修改为 9870 端口，2.x 版本还是 50070 端口</p>
+<p><img src="hadoop-6.PNG" alt="hadoop-6"></p>
+<p>​</p>
+</li>
+</ol>
+<h3 id="Hadoop-Programming-Word-Count"><a href="#Hadoop-Programming-Word-Count" class="headerlink" title="Hadoop Programming - Word Count"></a>Hadoop Programming - Word Count</h3><p>不需要启动 hadoop，方便程序调试。</p>
+<p>运行一个基本的 Word Count 程序，在 Intellij IDEA 中调试，新建 Maven 项目，在 <code>pom.xml</code> 中添加如下依赖项：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.apache.hadoop&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;hadoop-common&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;version&gt;3.0.0&lt;&#x2F;version&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br><span class="line"></span><br><span class="line">&lt;!-- https:&#x2F;&#x2F;mvnrepository.com&#x2F;artifact&#x2F;org.apache.hadoop&#x2F;hadoop-client --&gt;</span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.apache.hadoop&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;hadoop-client&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;version&gt;3.0.0&lt;&#x2F;version&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br></pre></td></tr></table></figure>
+
+<p>等待一段时间，项目 Auto-import 完成后，就可以测试 WordCount 程序。程序源代码来自 Apache Hadoop 3.0.0 Tutorials，稍作了一点修改。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.util.StringTokenizer;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.conf.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.fs.Path;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.io.IntWritable;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.io.Text;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.mapreduce.Job;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.mapreduce.Mapper;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.mapreduce.Reducer;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.mapreduce.lib.input.FileInputFormat;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WordCount</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">TokenizerMapper</span></span></span><br><span class="line"><span class="class">            <span class="keyword">extends</span> <span class="title">Mapper</span>&lt;<span class="title">Object</span>, <span class="title">Text</span>, <span class="title">Text</span>, <span class="title">IntWritable</span>&gt;</span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> IntWritable one = <span class="keyword">new</span> IntWritable(<span class="number">1</span>);</span><br><span class="line">        <span class="keyword">private</span> Text word = <span class="keyword">new</span> Text();</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">map</span><span class="params">(Object key, Text value, Context context</span></span></span><br><span class="line"><span class="function"><span class="params">        )</span> <span class="keyword">throws</span> IOException, InterruptedException </span>&#123;</span><br><span class="line">            StringTokenizer itr = <span class="keyword">new</span> StringTokenizer(value.toString());</span><br><span class="line">            <span class="keyword">while</span> (itr.hasMoreTokens()) &#123;</span><br><span class="line">                word.set(itr.nextToken());</span><br><span class="line">                context.write(word, one);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">IntSumReducer</span></span></span><br><span class="line"><span class="class">            <span class="keyword">extends</span> <span class="title">Reducer</span>&lt;<span class="title">Text</span>,<span class="title">IntWritable</span>,<span class="title">Text</span>,<span class="title">IntWritable</span>&gt; </span>&#123;</span><br><span class="line">        <span class="keyword">private</span> IntWritable result = <span class="keyword">new</span> IntWritable();</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">reduce</span><span class="params">(Text key, Iterable&lt;IntWritable&gt; values,</span></span></span><br><span class="line"><span class="function"><span class="params">                           Context context</span></span></span><br><span class="line"><span class="function"><span class="params">        )</span> <span class="keyword">throws</span> IOException, InterruptedException </span>&#123;</span><br><span class="line">            <span class="keyword">int</span> sum = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">for</span> (IntWritable val : values) &#123;</span><br><span class="line">                sum += val.get();</span><br><span class="line">            &#125;</span><br><span class="line">            result.set(sum);</span><br><span class="line">            context.write(key, result);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        Configuration conf = <span class="keyword">new</span> Configuration();</span><br><span class="line">        Job job = Job.getInstance(conf, <span class="string">"word count"</span>);</span><br><span class="line">        job.setJarByClass(WordCount<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">        job.setMapperClass(TokenizerMapper<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">        job.setCombinerClass(IntSumReducer<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">        job.setReducerClass(IntSumReducer<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">        job.setOutputKeyClass(Text<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">        job.setOutputValueClass(IntWritable<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">        FileInputFormat.addInputPath(job, <span class="keyword">new</span> Path(args[<span class="number">0</span>]));</span><br><span class="line">        <span class="comment">// 如果 output 目录已存在，则删除</span></span><br><span class="line">        Path outputPath = <span class="keyword">new</span> Path(args[<span class="number">1</span>]);</span><br><span class="line">        outputPath.getFileSystem(conf).delete(outputPath, <span class="keyword">true</span>);</span><br><span class="line"></span><br><span class="line">        FileOutputFormat.setOutputPath(job, <span class="keyword">new</span> Path(args[<span class="number">1</span>]));</span><br><span class="line">        FileOutputFormat.setOutputPath(job, <span class="keyword">new</span> Path(args[<span class="number">1</span>]));</span><br><span class="line">        System.exit(job.waitForCompletion(<span class="keyword">true</span>) ? <span class="number">0</span> : <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里没有涉及到 HDFS，所以输入文件 <code>input</code>  和结果输出 <code>output</code>，都是项目中的路径。这两个路径需要作为运行时的程序参数，可在 Intellij IDEA 中设置如下：</p>
+<p><img src="hadoop-7.PNG" alt="hadoop-7"></p>
+<p>此外，Hadoop 使用 log4j 日志工具（log4j 1.x 版本的，目前已经升级到 log4j2 了，旧版本已经停止支持，Hadoop 好像还是不支持，也不知道如何正确设置 slf4j。）在 <code>main/resources</code> 下新建一个 <code>log4j.properties</code>，</p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># initialize root logger with level ERROR for stdout and fout</span></span><br><span class="line"><span class="meta">log4j.rootLogger</span>=<span class="string">DEBUG,stdout,fout</span></span><br><span class="line"><span class="comment"># set the log level for these components</span></span><br><span class="line"><span class="meta">log4j.logger.com.endeca</span>=<span class="string">INFO</span></span><br><span class="line"><span class="meta">log4j.logger.com.endeca.itl.web.metrics</span>=<span class="string">INFO</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># add a ConsoleAppender to the logger stdout to write to the console</span></span><br><span class="line"><span class="meta">log4j.appender.stdout</span>=<span class="string">org.apache.log4j.ConsoleAppender</span></span><br><span class="line"><span class="meta">log4j.appender.stdout.layout</span>=<span class="string">org.apache.log4j.PatternLayout</span></span><br><span class="line"><span class="comment"># use a simple message format</span></span><br><span class="line"><span class="meta">log4j.appender.stdout.layout.ConversionPattern</span>=<span class="string">%m%n</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># add a FileAppender to the logger fout</span></span><br><span class="line"><span class="meta">log4j.appender.fout</span>=<span class="string">org.apache.log4j.FileAppender</span></span><br><span class="line"><span class="comment"># create a log file</span></span><br><span class="line"><span class="meta">log4j.appender.fout.File</span>=<span class="string">hadoop.log</span></span><br><span class="line"><span class="meta">log4j.appender.fout.layout</span>=<span class="string">org.apache.log4j.PatternLayout</span></span><br><span class="line"><span class="comment"># use a more detailed message pattern</span></span><br><span class="line"><span class="meta">log4j.appender.fout.layout.ConversionPattern</span>=<span class="string">%p\t%d&#123;ISO8601&#125;\t%r\t%c\t[%t]\t%m%n</span></span><br></pre></td></tr></table></figure>
+
+<p>当然需要准备一些文本文件放在 <code>input</code> 中，成功运行后，控制台中会显示运行中的一些过程和信息，最终结果输出在 <code>output</code> 中。</p>
+<h3 id="Hadoop-executes-JAR"><a href="#Hadoop-executes-JAR" class="headerlink" title="Hadoop executes JAR"></a>Hadoop executes JAR</h3><p>这一节将演示使用本地伪分布式（单机版）测试 Hadoop 程序。</p>
+<h4 id="数据准备"><a href="#数据准备" class="headerlink" title="数据准备"></a>数据准备</h4><p>在 cmd / powershell 中，使用 <code>hadoop fs</code> 指令向 HDFS 中放入我们的测试文件，需要先新建文件夹，加上 <code>-p</code> 参数可以直接建立多层目录。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 新建输入文件夹</span></span><br><span class="line">$ hadoop fs -mkdir -p /data/input</span><br><span class="line"><span class="comment"># 把文件传输到 HDFS 中</span></span><br><span class="line">$ hadoop fs -put tf.py /data/input</span><br><span class="line">$ hadoop fs -put dice.cpp /data/input</span><br><span class="line">$ hadoop fs -put dic.c /data/input</span><br><span class="line"><span class="comment"># 查看文件</span></span><br><span class="line">$ hadoop fs -ls /data/input</span><br><span class="line">Found 3 items</span><br><span class="line">-rw-r--r--   1 Godfray supergroup         80 2018-03-15 17:00 /data/input/dic.c</span><br><span class="line">-rw-r--r--   1 Godfray supergroup        985 2018-03-15 17:00 /data/input/dice.cpp</span><br><span class="line">-rw-r--r--   1 Godfray supergroup        925 2018-03-15 17:00 /data/input/tf.py</span><br></pre></td></tr></table></figure>
+
+<p>当然，也可以通过 <code>localhost:9870</code> 的 <code>Utilities -&gt; Browser the file system</code> 功能查看文件。</p>
+<h4 id="使用-Hadoop-运行-JAR"><a href="#使用-Hadoop-运行-JAR" class="headerlink" title="使用 Hadoop 运行 JAR"></a>使用 Hadoop 运行 JAR</h4><p>先介绍下怎么在 Intellij IDEA 中打包可运行的 JAR 文件方法：</p>
+<ul>
+<li>选择项目，<code>Open Module Settings</code>，选择 Artifacts，新建一个 jar，选择 empty 即可，右边的加号点击添加 Module Ouput，OK 或者 Apply 保存即可</li>
+<li>菜单栏，<code>Build -&gt; Build Artifacts... -&gt; build</code>  即可，通常会在项目的 <code>out</code> 文件夹中生成 jar 文件</li>
+<li>千万不要加入 <code>META-INF</code>，要不然就要把打包好的 jar 中的 <code>META_INF\license</code>  删除 </li>
+</ul>
+<p>确保 Hadoop 的各项相关配置已经开启，测试时发现依旧需要以管理员权限启动各项服务，否则会有 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Exception message: CreateSymbolicLink error (1314)</span><br></pre></td></tr></table></figure>
+
+<p>的错误，网上资料说需要管理员权限…</p>
+<p>使用命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hadoop jar wordcount.jar hadoop.WordCount /data/input /data/output</span><br></pre></td></tr></table></figure>
+
+<p>即可以伪分布式方式运行 Hadoop 程序。</p>
+<h4 id="程序运行结果"><a href="#程序运行结果" class="headerlink" title="程序运行结果"></a>程序运行结果</h4><p>首先会在 cmd 中出现运行信息，这与本地调试的命令行中输出的信息基本一致，会有一个关于进度的信息：</p>
+<p><img src="hadoop-8.PNG" alt="hadoop-8"></p>
+<p>可以通过 <code>localhost:8088</code> 查看任务的运行情况。</p>
+<p><img src="hadoop-9.PNG" alt="hadoop-9"></p>
+<p>最后，可以在 HDFS 中查看 WordCount 的统计结果，使用命令行方式查看：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">$ hadoop fs -get -f /data/output .</span><br><span class="line">$ head output\part-r-00000</span><br><span class="line"><span class="comment"># 这是统计结果</span></span><br><span class="line"><span class="string">""</span><span class="string">"Calculates   1</span></span><br><span class="line"><span class="string">#include        6</span></span><br><span class="line"><span class="string">'\n');  2</span></span><br><span class="line"><span class="string">'maxval':       1</span></span><br><span class="line"><span class="string">'minval':       1</span></span><br><span class="line"><span class="string">(colour_number-1);      1</span></span><br><span class="line"><span class="string">(split_part     2</span></span><br><span class="line"><span class="string">(std::numeric_limits&lt;std::streamsize&gt;::max(),   2</span></span><br><span class="line"><span class="string">*       3</span></span><br><span class="line"><span class="string">**/     2</span></span><br></pre></td></tr></table></figure>
+
+<p>还有一种方式就是在 <code>localhost:9870</code> 的 <code>Utilities -&gt; Browser the file system</code> 中查看：</p>
+<p><img src="hadoop-10.PNG" alt="hadoop-10"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Hadoop/" rel="tag"># Hadoop</a>
+              <a href="/tags/MapReduce/" rel="tag"># MapReduce</a>
+              <a href="/tags/Windows-10/" rel="tag"># Windows 10</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/reading11/" rel="prev" title="Leverage Long and Short-term Information in Content-aware Movie Recommendation">
+      <i class="fa fa-chevron-left"></i> Leverage Long and Short-term Information in Content-aware Movie Recommendation
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/reading12/" rel="next" title="Optimizing Gross Merchandise Volume via DNN-MAB Dynamic Ranking Paradigm">
+      Optimizing Gross Merchandise Volume via DNN-MAB Dynamic Ranking Paradigm <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#准备工作"><span class="nav-number">1.</span> <span class="nav-text">准备工作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Hadoop-Go"><span class="nav-number">2.</span> <span class="nav-text">Hadoop Go</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Hadoop-Programming-Word-Count"><span class="nav-number">3.</span> <span class="nav-text">Hadoop Programming - Word Count</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Hadoop-executes-JAR"><span class="nav-number">4.</span> <span class="nav-text">Hadoop executes JAR</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#数据准备"><span class="nav-number">4.1.</span> <span class="nav-text">数据准备</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用-Hadoop-运行-JAR"><span class="nav-number">4.2.</span> <span class="nav-text">使用 Hadoop 运行 JAR</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#程序运行结果"><span class="nav-number">4.3.</span> <span class="nav-text">程序运行结果</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Godfray Qiu"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Godfray Qiu</p>
+  <div class="site-description" itemprop="description">清纯佳人白玫瑰，高冷酸假</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">33</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">50</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/qiufengyu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;qiufengyu" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:mrqiufengyu@gmail.com" title="E-Mail → mailto:mrqiufengyu@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/237533031" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;237533031" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/qiufengyu" title="Facebook → https:&#x2F;&#x2F;www.facebook.com&#x2F;qiufengyu" rel="noopener" target="_blank"><i class="fa fa-fw fa-facebook"></i>Facebook</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/GodfrayQiu" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;GodfrayQiu" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://instagram.com/godfrayqiu" title="Instagram → http:&#x2F;&#x2F;instagram.com&#x2F;godfrayqiu" rel="noopener" target="_blank"><i class="fa fa-fw fa-instagram"></i>Instagram</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/qiufengyu" title="LinkedIn → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;qiufengyu" rel="noopener" target="_blank"><i class="fa fa-fw fa-linkedin"></i>LinkedIn</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://space.bilibili.com/6625805" title="Bilibili → http:&#x2F;&#x2F;space.bilibili.com&#x2F;6625805" rel="noopener" target="_blank"><i class="fa fa-fw fa-youtube"></i>Bilibili</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Godfray Qiu</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes : 0,
+          toolbar  : 0,
+          statusbar: 0,
+          pagemode : 'thumbs',
+          view     : 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '1220px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

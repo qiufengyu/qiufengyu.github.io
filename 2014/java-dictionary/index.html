@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon.ico">
+  <link rel="mask-icon" href="/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"qiufengyu.github.io","root":"/","scheme":"Gemini","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="做JAVA的第一次大作业有感，觉得以后会用到其中某些东西吧，这个奇怪的作业，这个磨人的小妖精~">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JAVA - Dictionary 第一次大作业">
+<meta property="og:url" content="http://qiufengyu.github.io/2014/java-dictionary/">
+<meta property="og:site_name" content="Heaven&#39;s Wall">
+<meta property="og:description" content="做JAVA的第一次大作业有感，觉得以后会用到其中某些东西吧，这个奇怪的作业，这个磨人的小妖精~">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://qiufengyu.github.io/2014/java-dictionary/result.png">
+<meta property="og:image" content="http://qiufengyu.github.io/2014/java-dictionary/doge.png">
+<meta property="article:published_time" content="2014-10-29T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-02-23T13:02:16.976Z">
+<meta property="article:author" content="Godfray Qiu">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="projects">
+<meta property="article:tag" content="notes">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://qiufengyu.github.io/2014/java-dictionary/result.png">
+
+<link rel="canonical" href="http://qiufengyu.github.io/2014/java-dictionary/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>JAVA - Dictionary 第一次大作业 | Heaven's Wall</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta custom-logo">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Heaven's Wall</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">落尽红樱君不见，轻绘梨花泪沾衣</p>
+      <a>
+        <img class="custom-logo-image" src="/images/custom-logo.jpg" alt="Heaven's Wall">
+      </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://qiufengyu.github.io/2014/java-dictionary/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Godfray Qiu">
+      <meta itemprop="description" content="清纯佳人白玫瑰，高冷酸假">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Heaven's Wall">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          JAVA - Dictionary 第一次大作业
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2014-10-30 00:00:00" itemprop="dateCreated datePublished" datetime="2014-10-30T00:00:00+08:00">2014-10-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-02-23 21:02:16" itemprop="dateModified" datetime="2020-02-23T21:02:16+08:00">2020-02-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/JAVA/" itemprop="url" rel="index"><span itemprop="name">JAVA</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">做JAVA的第一次大作业有感，觉得以后会用到其中某些东西吧，这个奇怪的作业，这个磨人的小妖精~</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="做完感受"><a href="#做完感受" class="headerlink" title="做完感受"></a>做完感受</h2><p>这次写 JAVA 课的大作业，首先不得不佩服所给的 <code>dictionary.txt</code> 词典数据文件的厉害之处啊，各种大小写、连字符还有各种词组的不同情况在自己测试的时候都中奖了，我该高兴么…</p>
+<h2 id="实现过程"><a href="#实现过程" class="headerlink" title="实现过程"></a>实现过程</h2><p>其实大作业的要求不高，大概就是一个词典的查询软件，提供了后台词典文件，只要完成其中的文件I/O，进行String的处理就可以了。</p>
+<p>下面其实主要是一些算法问题，查找的话，既然有序（但是从某些角度说，<br>字符 <code>-</code> 的值要比 <code>a-z</code> 小啊，但是在 dictionary 中的顺序却不是这样！所以我暴力地进行了一次 QuickSort，果断 $O(n\log n)$)。不过鉴于变态的要求联想的功能，我就怂了，只能稍微修改下这个 quicksort。不过 JAVA 中 String 也是蛮厉害的，compareToIgnoreCase，还有什么 split 方法比西加加不知道高到哪里去了，简直是福利啊，也支持正则表达式~~却由此中枪了 <code>-</code> 的问题…..</p>
+<p>关于其中的纠错问题，就厚颜无耻地选了一个<a href="http://en.wikipedia.org/wiki/Levenshtein_distance" target="_blank" rel="noopener" title="编辑距离">Levenshtein Distance</a>计算啊，还能控制精度，不亦乐乎…</p>
+<p>下面给出Levenshtein Distance计算的函数….</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"> <span class="function"><span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">distance</span><span class="params">(String x, String y)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> m = x.length();</span><br><span class="line">        <span class="keyword">int</span> n = y.length();</span><br><span class="line">        <span class="keyword">int</span>[][] T = <span class="keyword">new</span> <span class="keyword">int</span>[m + <span class="number">1</span>][n + <span class="number">1</span>];</span><br><span class="line">        T[<span class="number">0</span>][<span class="number">0</span>] = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; n; j++) &#123;</span><br><span class="line">            T[<span class="number">0</span>][j + <span class="number">1</span>] = T[<span class="number">0</span>][j] + ins(y, j);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; m; i++) &#123;</span><br><span class="line">            T[i + <span class="number">1</span>][<span class="number">0</span>] = T[i][<span class="number">0</span>] + del(x, i);</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; n; j++) &#123;</span><br><span class="line">                T[i + <span class="number">1</span>][j + <span class="number">1</span>] =  min(T[i][j] + sub(x, i, y, j), T[i][j + <span class="number">1</span>] + del(x, i),</span><br><span class="line">                    T[i + <span class="number">1</span>][j] + ins(y, j));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> T[m][n];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">sub</span><span class="params">(String x, <span class="keyword">int</span> xi, String y, <span class="keyword">int</span> yi)</span> </span>&#123;</span><br><span class="line">          <span class="keyword">return</span> x.charAt(xi) == y.charAt(yi) ? <span class="number">0</span> : <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">ins</span><span class="params">(String x, <span class="keyword">int</span> xi)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">del</span><span class="params">(String x, <span class="keyword">int</span> xi)</span> </span>&#123;</span><br><span class="line">          <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">min</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b, <span class="keyword">int</span> c)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> Math.min(Math.min(a, b), c);</span><br><span class="line">    &#125;</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+
+<h2 id="关于JList"><a href="#关于JList" class="headerlink" title="关于JList"></a>关于JList</h2><p>说了这么多，我就来说说主题，JList…</p>
+<h3 id="Question-1-JList-的-Listeners"><a href="#Question-1-JList-的-Listeners" class="headerlink" title="Question 1: JList 的 Listeners"></a>Question 1: JList 的 Listeners</h3><p>首先就吃了一个 ListSelectionListener 的亏啊，结果因为这个 GUI 中的其他Listeners 有冲突，遂抛弃之，改用 MouseListener 和 KeyListener（Only Up and Down），这才得以解决…泪目…</p>
+<h3 id="Question-2-动态的-JList"><a href="#Question-2-动态的-JList" class="headerlink" title="Question 2: 动态的 JList"></a>Question 2: 动态的 JList</h3><p>因为 JList 要实时更新，所以默认的 JList 似乎办不到，这个时候 Google 之，采用 DefaultListModel，就能够进行 add 和 delete JList中的项目啦~~</p>
+<h3 id="Question-3-JList-上的特效"><a href="#Question-3-JList-上的特效" class="headerlink" title="Question 3: JList 上的特效"></a>Question 3: JList 上的特效</h3><p>为了美观，我想要把 JList 上选中的项表示的明显一些，就是加粗，字号增大一号，但是 JList 本身似乎没有单独设置 selectedItem 的函数，这个时候就要把 JList 中的项目选为 JLabel 的 subclass，而不是简单的 String 了…</p>
+<p>里面还是很复杂的…首先要定义一个 Item 的类，用来定义要放进去的东西，其实感觉 String 也是可以的啊…</p>
+<figure class="highlight java"><figcaption><span>MyListItem.java</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyListItem</span> </span>&#123;    </span><br><span class="line">    String text;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyListItem</span><span class="params">(String text)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.text=text;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> text;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setString</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">        text=s;</span><br><span class="line">    &#125; </span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+
+<p>这个时候就可以用 CellRenderer 来实现格式的设置啦~~</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyCellRenderer</span> <span class="keyword">extends</span> <span class="title">JLabel</span> <span class="keyword">implements</span> <span class="title">ListCellRenderer</span> </span>&#123;    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Font font1 = <span class="keyword">new</span> Font(<span class="string">"Palatino Linotype"</span>,Font.PLAIN,<span class="number">13</span>);</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Font font2 = <span class="keyword">new</span> Font(<span class="string">"Palatino Linotype"</span>,Font.BOLD+Font.ITALIC,<span class="number">14</span>);</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Color color1 = <span class="keyword">new</span> Color(<span class="number">176</span>,<span class="number">196</span>,<span class="number">222</span>);</span><br><span class="line">    <span class="comment">//for the JLabel default to be transparent, so setOpaque true to set the background color </span></span><br><span class="line">    <span class="comment">//http://huangqiqing123.iteye.com/blog/1678208</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyCellRenderer</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.setOpaque(<span class="keyword">true</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> Component <span class="title">getListCellRendererComponent</span><span class="params">(JList list,</span></span></span><br><span class="line"><span class="function"><span class="params">        Object value,</span></span></span><br><span class="line"><span class="function"><span class="params">        <span class="keyword">int</span> index,</span></span></span><br><span class="line"><span class="function"><span class="params">        <span class="keyword">boolean</span> isSelected,</span></span></span><br><span class="line"><span class="function"><span class="params">        <span class="keyword">boolean</span> cellHasFocus)</span> </span>&#123;</span><br><span class="line">        MyListItem myItem=(MyListItem)value;</span><br><span class="line">        <span class="keyword">this</span>.setText(myItem.getString());</span><br><span class="line">        <span class="keyword">if</span>(isSelected) &#123;</span><br><span class="line">            <span class="keyword">this</span>.setFont(font2);</span><br><span class="line">            <span class="keyword">this</span>.setBackground(color1);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">this</span>.setFont(font1);</span><br><span class="line">            <span class="keyword">this</span>.setBackground(Color.WHITE);</span><br><span class="line">        &#125;                </span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;             </span><br><span class="line">    &#125;    </span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+
+<p>好啦<del>这个时候，这样定义我们的 JList 就可以啦</del>这样选择的那项就会有一些特殊效果啦<del>~</del></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">private</span> JList &lt;MyListItem&gt; jltWordlist = <span class="keyword">new</span> JList&lt;MyListItem&gt;();</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> DefaultListModel&lt;MyListItem&gt; model = <span class="keyword">new</span> DefaultListModel&lt;MyListItem&gt;(); </span><br><span class="line">jltWordlist.setCellRenderer(<span class="keyword">new</span> MyCellRenderer());</span><br></pre></td></tr></table></figure>
+
+<p>效果图，还不错看吧~~</p>
+<p><img src="result.png" alt="Sorry~"></p>
+<h2 id="彩蛋之doge"><a href="#彩蛋之doge" class="headerlink" title="彩蛋之doge"></a>彩蛋之doge</h2><p>哈哈哈，我一定是疯了~因为要实现如果用户输入一个错误的单词，要尽可能地根据字典内的单词进行纠错啊，这个时候我加了一个doge，不服来辩！！不知道会不会被杀掉…</p>
+<p><img src="doge.png" alt="Sorry~"></p>
+<h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2><h3 id="自定义添加单词"><a href="#自定义添加单词" class="headerlink" title="自定义添加单词"></a>自定义添加单词</h3><p>主要是文件 I/O 的操作啦~~</p>
+<h3 id="翻译句子"><a href="#翻译句子" class="headerlink" title="翻译句子"></a>翻译句子</h3><p>在后来的上机检查中，又要求我们实现对句子的翻译，不用管句子是否通顺，基本上用的是贪心算法，尽可能地组成一个长的在字典文件中词组查找并翻译，然后组合就可以了~~</p>
+<h3 id="第二次大作业"><a href="#第二次大作业" class="headerlink" title="第二次大作业"></a>第二次大作业</h3><p>要求实现一个网络版的词典，从百度、必应和有道上获取翻译，并且还有一堆关于数据库和 Server/Client 的内容，附带用户注册、好友分享点赞等功能…很复杂！慢慢写吧，然而我成功找到了<a href="https://github.com/SongY123" target="_blank" rel="noopener">大腿</a>！哈哈哈~~</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/java/" rel="tag"># java</a>
+              <a href="/tags/projects/" rel="tag"># projects</a>
+              <a href="/tags/notes/" rel="tag"># notes</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2014/sort-selection/" rel="prev" title="Sorting and Selection in $O(n)$">
+      <i class="fa fa-chevron-left"></i> Sorting and Selection in $O(n)$
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2014/shortest-path/" rel="next" title="Algorithm - 图的最短路径算法">
+      Algorithm - 图的最短路径算法 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#做完感受"><span class="nav-number">1.</span> <span class="nav-text">做完感受</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现过程"><span class="nav-number">2.</span> <span class="nav-text">实现过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于JList"><span class="nav-number">3.</span> <span class="nav-text">关于JList</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Question-1-JList-的-Listeners"><span class="nav-number">3.1.</span> <span class="nav-text">Question 1: JList 的 Listeners</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Question-2-动态的-JList"><span class="nav-number">3.2.</span> <span class="nav-text">Question 2: 动态的 JList</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Question-3-JList-上的特效"><span class="nav-number">3.3.</span> <span class="nav-text">Question 3: JList 上的特效</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#彩蛋之doge"><span class="nav-number">4.</span> <span class="nav-text">彩蛋之doge</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#后记"><span class="nav-number">5.</span> <span class="nav-text">后记</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义添加单词"><span class="nav-number">5.1.</span> <span class="nav-text">自定义添加单词</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#翻译句子"><span class="nav-number">5.2.</span> <span class="nav-text">翻译句子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第二次大作业"><span class="nav-number">5.3.</span> <span class="nav-text">第二次大作业</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Godfray Qiu"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Godfray Qiu</p>
+  <div class="site-description" itemprop="description">清纯佳人白玫瑰，高冷酸假</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">33</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">50</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/qiufengyu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;qiufengyu" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:mrqiufengyu@gmail.com" title="E-Mail → mailto:mrqiufengyu@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/237533031" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;237533031" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/qiufengyu" title="Facebook → https:&#x2F;&#x2F;www.facebook.com&#x2F;qiufengyu" rel="noopener" target="_blank"><i class="fa fa-fw fa-facebook"></i>Facebook</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/GodfrayQiu" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;GodfrayQiu" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://instagram.com/godfrayqiu" title="Instagram → http:&#x2F;&#x2F;instagram.com&#x2F;godfrayqiu" rel="noopener" target="_blank"><i class="fa fa-fw fa-instagram"></i>Instagram</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/qiufengyu" title="LinkedIn → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;qiufengyu" rel="noopener" target="_blank"><i class="fa fa-fw fa-linkedin"></i>LinkedIn</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://space.bilibili.com/6625805" title="Bilibili → http:&#x2F;&#x2F;space.bilibili.com&#x2F;6625805" rel="noopener" target="_blank"><i class="fa fa-fw fa-youtube"></i>Bilibili</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Godfray Qiu</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes : 0,
+          toolbar  : 0,
+          statusbar: 0,
+          pagemode : 'thumbs',
+          view     : 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '1220px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
